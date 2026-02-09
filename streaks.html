@@ -3,8 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi Streak Tracker</title>
+    <title>StreakFlow - Ultimate Habit Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .dark-mode {
+            --primary: #818cf8;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,79 +39,235 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f8f9fa;
-            color: #333;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--background);
+            color: var(--text);
             line-height: 1.6;
-            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
             min-height: 100vh;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
             padding: 20px;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 1.1rem;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
         }
 
-        /* Add Streak Form */
-        .add-streak-form {
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        .logo i {
+            font-size: 2.2rem;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .theme-toggle, .settings-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover, .settings-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
             margin-bottom: 30px;
         }
 
-        .form-row {
+        .stat-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Streaks Section */
+        .streaks-section {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .filter-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Add Streak Form */
+        .add-streak-card {
+            background: var(--surface);
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-streak-card:hover {
+            border-color: var(--primary);
+            transform: scale(1.01);
+        }
+
+        .add-streak-form {
+            display: none;
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
+            margin-top: 20px;
+        }
+
+        .add-streak-form.show {
+            display: grid;
+        }
+
+        .form-group {
             margin-bottom: 15px;
         }
 
-        input[type="text"] {
-            flex: 1;
-            padding: 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: border 0.2s ease;
+        .form-group.full-width {
+            grid-column: span 2;
         }
 
-        input[type="text"]:focus {
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--background);
+            color: var(--text);
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: #3498db;
+            border-color: var(--primary);
         }
 
-        .add-btn {
-            background: #2ecc71;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 14px 30px;
-            font-size: 1rem;
-            font-weight: 600;
+        .color-picker {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
             cursor: pointer;
-            transition: background 0.2s ease;
+            border: 2px solid transparent;
         }
 
-        .add-btn:hover {
-            background: #27ae60;
+        .color-option.selected {
+            border-color: var(--text);
         }
 
         /* Streaks Grid */
@@ -92,151 +275,219 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
-            margin-bottom: 40px;
         }
 
         .streak-card {
-            background: white;
+            background: var(--surface);
             border-radius: 16px;
             padding: 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary);
+            position: relative;
+            transition: all 0.3s;
         }
 
         .streak-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         .streak-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            align-items: start;
+            margin-bottom: 15px;
         }
 
         .streak-title {
-            font-size: 1.4rem;
-            color: #2c3e50;
-            font-weight: 600;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 5px;
         }
 
-        .delete-btn {
-            background: #e74c3c;
+        .streak-category {
+            display: inline-block;
+            background: var(--primary);
             color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 6px 12px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background 0.2s ease;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
         }
 
-        .delete-btn:hover {
-            background: #c0392b;
+        .streak-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .streak-progress {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: width 0.3s;
         }
 
         .streak-count {
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 800;
-            color: #3498db;
             text-align: center;
             margin: 15px 0;
         }
 
-        .streak-label {
-            color: #7f8c8d;
-            font-size: 1rem;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .streak-controls {
+        .streak-footer {
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
         }
 
         .mark-btn {
-            flex: 1;
-            background: #3498db;
+            background: var(--success);
             color: white;
             border: none;
             border-radius: 10px;
-            padding: 12px;
-            font-size: 0.95rem;
+            padding: 12px 24px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s ease;
+            transition: all 0.2s;
         }
 
         .mark-btn:hover {
-            background: #2980b9;
+            background: #0da271;
+            transform: scale(1.05);
         }
 
         .mark-btn.completed {
-            background: #27ae60;
+            background: var(--text-secondary);
+            cursor: default;
         }
 
-        .reset-btn {
-            background: #ecf0f1;
-            color: #2c3e50;
-            border: none;
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s ease;
+        .mark-btn.completed:hover {
+            transform: none;
         }
 
-        .reset-btn:hover {
-            background: #dfe6e9;
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
         }
 
-        /* Statistics */
-        .stats {
-            background: white;
-            border-radius: 16px;
+        .calendar-card, .upcoming-card {
+            background: var(--surface);
+            border-radius: 20px;
             padding: 25px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: var(--shadow);
         }
 
-        .stats-title {
-            font-size: 1.3rem;
+        .calendar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
             margin-bottom: 20px;
-            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .stats-grid {
+        .calendar-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
         }
 
-        .stat-card {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 12px;
+        .day-header {
             text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            padding: 8px;
         }
 
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #3498db;
-            margin-bottom: 5px;
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .stat-label {
-            color: #7f8c8d;
-            font-size: 0.95rem;
+        .day-cell.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .day-cell.today {
+            border: 2px solid var(--primary);
+        }
+
+        /* Settings Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
         }
 
         /* Empty State */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #7f8c8d;
+            color: var(--text-secondary);
         }
 
         .empty-icon {
@@ -245,32 +496,65 @@
             opacity: 0.5;
         }
 
-        .empty-message {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
             .streaks-grid {
                 grid-template-columns: 1fr;
             }
             
-            .form-row {
-                flex-direction: column;
+            .add-streak-form {
+                grid-template-columns: 1fr;
             }
             
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .form-group.full-width {
+                grid-column: span 1;
             }
         }
 
         @media (max-width: 480px) {
-            .stats-grid {
+            .quick-stats {
                 grid-template-columns: 1fr;
             }
             
-            .streak-controls {
+            header {
                 flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
             }
         }
     </style>
@@ -278,115 +562,299 @@
 <body>
     <div class="container">
         <header>
-            <h1>🔥 Multi Streak Tracker</h1>
-            <p class="subtitle">Track multiple habits at once</p>
+            <div class="logo">
+                <i class="fas fa-fire"></i>
+                <span>StreakFlow</span>
+            </div>
+            <div class="header-controls">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                    <span>Dark Mode</span>
+                </button>
+                <button class="settings-btn" id="settingsBtn">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+            </div>
         </header>
-        
-        <div class="add-streak-form">
-            <div class="form-row">
-                <input type="text" id="streakName" placeholder="Enter streak name (e.g., 'Exercise', 'Meditation', 'Read')">
-                <button class="add-btn" id="addStreakBtn">+ Add Streak</button>
+
+        <div class="quick-stats">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-fire"></i></div>
+                <div class="stat-value" id="activeStreaks">0</div>
+                <div class="stat-label">Active Streaks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="stat-value" id="completedToday">0</div>
+                <div class="stat-label">Completed Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                <div class="stat-value" id="longestStreak">0</div>
+                <div class="stat-label">Longest Streak</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="stat-value" id="completionRate">0%</div>
+                <div class="stat-label">Success Rate</div>
             </div>
         </div>
-        
-        <div class="streaks-grid" id="streaksGrid">
-            <!-- Streak cards will be added here -->
+
+        <div class="main-content">
+            <div class="streaks-section">
+                <div class="section-header">
+                    <h2 class="section-title">Your Streaks</h2>
+                    <div class="filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="active">Active</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                        <button class="filter-btn" data-filter="broken">Needs Attention</button>
+                    </div>
+                </div>
+
+                <div class="add-streak-card" id="addStreakTrigger">
+                    <div style="text-align: center; color: var(--primary);">
+                        <i class="fas fa-plus-circle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <h3 style="font-size: 1.2rem; margin-bottom: 5px;">Add New Habit</h3>
+                        <p style="color: var(--text-secondary);">Click to start tracking a new habit</p>
+                    </div>
+                </div>
+
+                <div class="add-streak-form" id="addStreakForm">
+                    <div class="form-group">
+                        <label for="streakName">Habit Name</label>
+                        <input type="text" id="streakName" placeholder="e.g., Morning Meditation">
+                    </div>
+                    <div class="form-group">
+                        <label for="streakCategory">Category</label>
+                        <select id="streakCategory">
+                            <option value="health">Health & Fitness</option>
+                            <option value="learning">Learning</option>
+                            <option value="productivity">Productivity</option>
+                            <option value="mindfulness">Mindfulness</option>
+                            <option value="creative">Creative</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="streakDescription">Description (Optional)</label>
+                        <textarea id="streakDescription" rows="3" placeholder="Why is this habit important to you?"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Color Theme</label>
+                        <div class="color-picker">
+                            <div class="color-option selected" style="background: #6366f1;" data-color="#6366f1"></div>
+                            <div class="color-option" style="background: #10b981;" data-color="#10b981"></div>
+                            <div class="color-option" style="background: #f59e0b;" data-color="#f59e0b"></div>
+                            <div class="color-option" style="background: #8b5cf6;" data-color="#8b5cf6"></div>
+                            <div class="color-option" style="background: #ec4899;" data-color="#ec4899"></div>
+                        </div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="streakFrequency">Frequency</label>
+                        <select id="streakFrequency">
+                            <option value="daily">Every Day</option>
+                            <option value="weekdays">Weekdays Only</option>
+                            <option value="weekly">Once a Week</option>
+                            <option value="custom">Custom Schedule</option>
+                        </select>
+                    </div>
+                    <button class="mark-btn" id="saveStreakBtn" style="grid-column: span 2;">Create Habit</button>
+                </div>
+
+                <div class="streaks-grid" id="streaksGrid">
+                    <!-- Streak cards will be dynamically inserted here -->
+                </div>
+
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-icon"><i class="fas fa-clipboard-list"></i></div>
+                    <h3 style="margin-bottom: 10px;">No Streaks Yet</h3>
+                    <p style="color: var(--text-secondary);">Start by adding your first habit above!</p>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="calendar-card">
+                    <h3 class="calendar-title">
+                        <i class="fas fa-calendar-alt"></i>This Month
+                    </h3>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar will be generated here -->
+                    </div>
+                </div>
+
+                <div class="upcoming-card">
+                    <h3 class="calendar-title">
+                        <i class="fas fa-bell"></i>Upcoming
+                    </h3>
+                    <div id="upcomingList">
+                        <div style="color: var(--text-secondary); text-align: center; padding: 20px;">
+                            No upcoming streaks to mark
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        
-        <div class="stats">
-            <h2 class="stats-title">📊 Overall Statistics</h2>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value" id="totalStreaks">0</div>
-                    <div class="stat-label">Total Streaks</div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 style="font-size: 1.5rem;">Settings</h2>
+                <button class="close-btn" id="closeSettings">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Start of Week</label>
+                    <select id="weekStart">
+                        <option value="0">Sunday</option>
+                        <option value="1">Monday</option>
+                    </select>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="activeStreaks">0</div>
-                    <div class="stat-label">Active Streaks</div>
+                <div class="form-group">
+                    <label>Reminder Time</label>
+                    <input type="time" id="reminderTime" value="20:00">
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="totalDays">0</div>
-                    <div class="stat-label">Total Days</div>
+                <div class="form-group">
+                    <label>Daily Goal</label>
+                    <input type="number" id="dailyGoal" min="1" max="10" value="3">
+                    <small style="color: var(--text-secondary);">Minimum streaks to complete daily</small>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="completedToday">0</div>
-                    <div class="stat-label">Done Today</div>
+                <div class="form-group">
+                    <button class="mark-btn" id="exportBtn" style="background: var(--primary); margin-right: 10px;">
+                        <i class="fas fa-download"></i> Export Data
+                    </button>
+                    <button class="reset-btn" id="importBtn" style="background: var(--surface); border: 1px solid var(--border);">
+                        <i class="fas fa-upload"></i> Import Data
+                    </button>
+                </div>
+                <div class="form-group">
+                    <button class="reset-btn" id="resetAllBtn" style="background: var(--danger); color: white; width: 100%;">
+                        <i class="fas fa-trash"></i> Reset All Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="confirmTitle"></h2>
+                <button class="close-btn" id="closeConfirm">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="mark-btn" id="confirmYes" style="flex: 1;">Yes</button>
+                    <button class="reset-btn" id="confirmNo" style="flex: 1; background: var(--surface);">No</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        class MultiStreakTracker {
+        class EnhancedStreakTracker {
             constructor() {
-                this.storageKey = 'multiStreakData';
+                this.storageKey = 'enhancedStreaks';
+                this.settingsKey = 'streakSettings';
                 this.streaks = this.loadData();
+                this.settings = this.loadSettings();
+                this.currentFilter = 'all';
                 this.init();
             }
             
             loadData() {
-                const saved = localStorage.getItem(this.storageKey);
-                return saved ? JSON.parse(saved) : [];
+                try {
+                    const saved = localStorage.getItem(this.storageKey);
+                    return saved ? JSON.parse(saved) : [];
+                } catch (e) {
+                    console.error('Error loading data:', e);
+                    return [];
+                }
+            }
+            
+            loadSettings() {
+                const defaultSettings = {
+                    darkMode: false,
+                    weekStart: 1,
+                    reminderTime: '20:00',
+                    dailyGoal: 3,
+                    notificationEnabled: false
+                };
+                
+                try {
+                    const saved = localStorage.getItem(this.settingsKey);
+                    return saved ? JSON.parse(saved) : defaultSettings;
+                } catch (e) {
+                    return defaultSettings;
+                }
             }
             
             saveData() {
                 localStorage.setItem(this.storageKey, JSON.stringify(this.streaks));
+                this.updateStats();
+            }
+            
+            saveSettings() {
+                localStorage.setItem(this.settingsKey, JSON.stringify(this.settings));
             }
             
             init() {
+                this.applyTheme();
                 this.renderStreaks();
+                this.renderCalendar();
+                this.renderUpcoming();
                 this.updateStats();
                 this.setupEventListeners();
+                this.checkDailyCompletions();
             }
             
-            formatDate(date) {
-                return date.toISOString().split('T')[0];
-            }
-            
-            addStreak(name) {
-                if (!name.trim()) {
-                    alert('Please enter a streak name');
-                    return;
+            applyTheme() {
+                if (this.settings.darkMode) {
+                    document.body.classList.add('dark-mode');
+                    document.querySelector('#themeToggle i').className = 'fas fa-sun';
+                    document.querySelector('#themeToggle span').textContent = 'Light Mode';
                 }
-                
-                const newStreak = {
+            }
+            
+            createStreak(data) {
+                const streak = {
                     id: Date.now().toString(),
-                    name: name.trim(),
+                    name: data.name,
+                    category: data.category || 'other',
+                    description: data.description || '',
+                    color: data.color || '#6366f1',
+                    frequency: data.frequency || 'daily',
                     currentStreak: 0,
                     longestStreak: 0,
                     lastActivity: null,
                     completedDays: [],
                     totalCompleted: 0,
-                    createdAt: new Date().toISOString()
+                    createdAt: new Date().toISOString(),
+                    goal: data.goal || null,
+                    reminders: data.reminders || false
                 };
                 
-                this.streaks.push(newStreak);
+                this.streaks.push(streak);
                 this.saveData();
                 this.renderStreaks();
-                this.updateStats();
-                
-                // Clear input
-                document.getElementById('streakName').value = '';
+                this.showNotification(`"${streak.name}" streak created!`);
             }
             
-            deleteStreak(id) {
-                if (confirm('Are you sure you want to delete this streak? This cannot be undone.')) {
-                    this.streaks = this.streaks.filter(streak => streak.id !== id);
-                    this.saveData();
-                    this.renderStreaks();
-                    this.updateStats();
-                }
-            }
-            
-            markStreak(id) {
+            markStreak(id, date = null) {
                 const streak = this.streaks.find(s => s.id === id);
                 if (!streak) return;
                 
-                const today = this.formatDate(new Date());
-                const yesterday = this.formatDate(new Date(Date.now() - 86400000));
+                const targetDate = date ? new Date(date) : new Date();
+                const today = this.formatDate(targetDate);
+                const yesterday = this.formatDate(new Date(targetDate.getTime() - 86400000));
                 
-                // Check if already marked today
-                if (streak.lastActivity === today) return;
+                // Check if already marked for this date
+                if (streak.completedDays.includes(today)) return;
                 
                 // Update streak logic
                 if (streak.lastActivity === yesterday || streak.currentStreak === 0) {
@@ -395,47 +863,105 @@
                     streak.currentStreak = 1;
                 }
                 
-                // Update longest streak
-                if (streak.currentStreak > streak.longestStreak) {
-                    streak.longestStreak = streak.currentStreak;
-                }
-                
-                // Update data
+                streak.longestStreak = Math.max(streak.longestStreak, streak.currentStreak);
                 streak.lastActivity = today;
                 streak.totalCompleted++;
-                
-                if (!streak.completedDays.includes(today)) {
-                    streak.completedDays.push(today);
-                }
+                streak.completedDays.push(today);
                 
                 this.saveData();
                 this.renderStreaks();
+                this.renderCalendar();
                 this.updateStats();
                 
                 // Visual feedback
-                this.showNotification(`${streak.name} streak updated!`);
+                const streakCard = document.querySelector(`[data-streak-id="${id}"]`);
+                if (streakCard) {
+                    streakCard.classList.add('pulse');
+                    setTimeout(() => streakCard.classList.remove('pulse'), 1000);
+                }
+                
+                this.showNotification(`Great! "${streak.name}" streak updated!`, 'success');
             }
             
-            resetStreak(id) {
-                if (confirm('Are you sure you want to reset this streak?')) {
-                    const streak = this.streaks.find(s => s.id === id);
-                    if (!streak) return;
-                    
+            unmarkStreak(id, date) {
+                const streak = this.streaks.find(s => s.id === id);
+                if (!streak) return;
+                
+                streak.completedDays = streak.completedDays.filter(d => d !== date);
+                streak.totalCompleted--;
+                
+                // Recalculate current streak
+                this.recalculateStreak(streak);
+                
+                this.saveData();
+                this.renderStreaks();
+                this.renderCalendar();
+                this.updateStats();
+                
+                this.showNotification(`Removed completion for "${streak.name}"`, 'warning');
+            }
+            
+            recalculateStreak(streak) {
+                if (streak.completedDays.length === 0) {
                     streak.currentStreak = 0;
                     streak.lastActivity = null;
-                    streak.completedDays = [];
-                    streak.totalCompleted = 0;
-                    
-                    this.saveData();
-                    this.renderStreaks();
-                    this.updateStats();
+                    return;
                 }
+                
+                const sortedDates = streak.completedDays.sort();
+                let currentStreak = 1;
+                let maxStreak = 1;
+                
+                for (let i = 1; i < sortedDates.length; i++) {
+                    const prevDate = new Date(sortedDates[i-1]);
+                    const currDate = new Date(sortedDates[i]);
+                    const diffDays = Math.floor((currDate - prevDate) / (1000 * 60 * 60 * 24));
+                    
+                    if (diffDays === 1) {
+                        currentStreak++;
+                        maxStreak = Math.max(maxStreak, currentStreak);
+                    } else {
+                        currentStreak = 1;
+                    }
+                }
+                
+                streak.currentStreak = currentStreak;
+                streak.longestStreak = maxStreak;
+                streak.lastActivity = sortedDates[sortedDates.length - 1];
             }
             
-            getStreakStatus(id) {
+            deleteStreak(id) {
+                this.showConfirm(
+                    'Delete Streak',
+                    'Are you sure you want to delete this streak? This action cannot be undone.',
+                    () => {
+                        this.streaks = this.streaks.filter(s => s.id !== id);
+                        this.saveData();
+                        this.renderStreaks();
+                        this.showNotification('Streak deleted', 'danger');
+                    }
+                );
+            }
+            
+            editStreak(id) {
                 const streak = this.streaks.find(s => s.id === id);
-                if (!streak) return 'not-started';
+                if (!streak) return;
                 
+                // For now, just delete and create new - in a real app you'd have an edit form
+                this.deleteStreak(id);
+                // Re-populate the add form with streak data
+                document.getElementById('streakName').value = streak.name;
+                document.getElementById('streakCategory').value = streak.category;
+                document.getElementById('streakDescription').value = streak.description;
+                document.getElementById('streakFrequency').value = streak.frequency;
+                document.getElementById('addStreakForm').classList.add('show');
+            }
+            
+            formatDate(date) {
+                return date.toISOString().split('T')[0];
+            }
+            
+            getStreakStatus(streak) {
                 const today = this.formatDate(new Date());
                 const yesterday = this.formatDate(new Date(Date.now() - 86400000));
                 
@@ -445,160 +971,469 @@
                 return 'not-started';
             }
             
-            getStreakMessage(id) {
-                const status = this.getStreakStatus(id);
-                const streak = this.streaks.find(s => s.id === id);
-                
-                switch(status) {
-                    case 'completed':
-                        return 'Great job today!';
-                    case 'active':
-                        return 'Keep your streak going!';
-                    case 'broken':
-                        return 'Start a new streak today!';
-                    default:
-                        return 'Start your first streak!';
-                }
+            getCategoryIcon(category) {
+                const icons = {
+                    'health': 'fas fa-heartbeat',
+                    'learning': 'fas fa-graduation-cap',
+                    'productivity': 'fas fa-tasks',
+                    'mindfulness': 'fas fa-brain',
+                    'creative': 'fas fa-palette',
+                    'other': 'fas fa-star'
+                };
+                return icons[category] || icons.other;
             }
             
             renderStreaks() {
                 const grid = document.getElementById('streaksGrid');
+                const emptyState = document.getElementById('emptyState');
                 
-                if (this.streaks.length === 0) {
-                    grid.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon">📊</div>
-                            <div class="empty-message">No streaks yet. Add your first one!</div>
-                        </div>
-                    `;
+                // Filter streaks
+                let filteredStreaks = this.streaks;
+                if (this.currentFilter === 'active') {
+                    filteredStreaks = this.streaks.filter(s => this.getStreakStatus(s) === 'active');
+                } else if (this.currentFilter === 'completed') {
+                    filteredStreaks = this.streaks.filter(s => this.getStreakStatus(s) === 'completed');
+                } else if (this.currentFilter === 'broken') {
+                    filteredStreaks = this.streaks.filter(s => this.getStreakStatus(s) === 'broken');
+                }
+                
+                if (filteredStreaks.length === 0) {
+                    grid.innerHTML = '';
+                    emptyState.style.display = 'block';
                     return;
                 }
                 
-                grid.innerHTML = this.streaks.map(streak => {
-                    const status = this.getStreakStatus(streak.id);
+                emptyState.style.display = 'none';
+                
+                grid.innerHTML = filteredStreaks.map(streak => {
+                    const status = this.getStreakStatus(streak);
                     const isCompletedToday = status === 'completed';
+                    const progress = streak.totalCompleted > 0 ? Math.min(100, (streak.currentStreak / 30) * 100) : 0;
                     
                     return `
-                        <div class="streak-card">
+                        <div class="streak-card slide-in" data-streak-id="${streak.id}" style="border-left-color: ${streak.color};">
                             <div class="streak-header">
-                                <div class="streak-title">${streak.name}</div>
-                                <button class="delete-btn" onclick="streakTracker.deleteStreak('${streak.id}')">
-                                    ×
-                                </button>
+                                <div>
+                                    <div class="streak-title">${streak.name}</div>
+                                    <div class="streak-category" style="background: ${streak.color};">
+                                        <i class="${this.getCategoryIcon(streak.category)}"></i> ${streak.category}
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="delete-btn" onclick="tracker.deleteStreak('${streak.id}')" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                             
-                            <div class="streak-count">${streak.currentStreak}</div>
-                            <div class="streak-label">DAY STREAK</div>
+                            ${streak.description ? `<div class="streak-description">${streak.description}</div>` : ''}
                             
-                            <div class="streak-controls">
+                            <div class="streak-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${progress}%; background: ${streak.color};"></div>
+                                </div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                                    ${streak.currentStreak} day streak • ${progress.toFixed(0)}% to 30 days
+                                </div>
+                            </div>
+                            
+                            <div class="streak-count" style="color: ${streak.color};">${streak.currentStreak}</div>
+                            
+                            <div class="streak-footer">
+                                <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                                    Best: ${streak.longestStreak} • Total: ${streak.totalCompleted}
+                                </div>
                                 <button class="mark-btn ${isCompletedToday ? 'completed' : ''}" 
-                                        onclick="streakTracker.markStreak('${streak.id}')"
+                                        onclick="tracker.markStreak('${streak.id}')"
+                                        style="background: ${isCompletedToday ? 'var(--text-secondary)' : streak.color};"
                                         ${isCompletedToday ? 'disabled' : ''}>
-                                    ${isCompletedToday ? '✅ Done Today' : '✅ Mark Today'}
+                                    ${isCompletedToday ? '<i class="fas fa-check"></i> Done' : '<i class="fas fa-fire"></i> Mark Today'}
                                 </button>
-                                <button class="reset-btn" onclick="streakTracker.resetStreak('${streak.id}')">
-                                    🔄 Reset
-                                </button>
-                            </div>
-                            
-                            <div style="margin-top: 15px; font-size: 0.9rem; color: #7f8c8d;">
-                                <div>Longest: ${streak.longestStreak} days</div>
-                                <div>Total: ${streak.totalCompleted} days</div>
-                                <div>Last: ${streak.lastActivity ? new Date(streak.lastActivity).toLocaleDateString() : 'Never'}</div>
                             </div>
                         </div>
                     `;
                 }).join('');
             }
             
-            updateStats() {
-                const today = this.formatDate(new Date());
+            renderCalendar() {
+                const grid = document.getElementById('calendarGrid');
+                grid.innerHTML = '';
                 
-                const totalStreaks = this.streaks.length;
-                const activeStreaks = this.streaks.filter(s => {
-                    const yesterday = this.formatDate(new Date(Date.now() - 86400000));
-                    return s.lastActivity === today || s.lastActivity === yesterday;
-                }).length;
+                // Add day headers
+                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                days.forEach(day => {
+                    const dayHeader = document.createElement('div');
+                    dayHeader.className = 'day-header';
+                    dayHeader.textContent = day;
+                    grid.appendChild(dayHeader);
+                });
                 
-                const totalDays = this.streaks.reduce((sum, streak) => sum + streak.totalCompleted, 0);
-                const completedToday = this.streaks.filter(s => s.lastActivity === today).length;
+                // Get today
+                const today = new Date();
+                const currentMonth = today.getMonth();
+                const currentYear = today.getFullYear();
                 
-                document.getElementById('totalStreaks').textContent = totalStreaks;
-                document.getElementById('activeStreaks').textContent = activeStreaks;
-                document.getElementById('totalDays').textContent = totalDays;
-                document.getElementById('completedToday').textContent = completedToday;
+                // Get first day of month
+                const firstDay = new Date(currentYear, currentMonth, 1);
+                const lastDay = new Date(currentYear, currentMonth + 1, 0);
+                
+                // Add empty cells for days before first day of month
+                for (let i = 0; i < firstDay.getDay(); i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.className = 'day-cell';
+                    grid.appendChild(emptyCell);
+                }
+                
+                // Add days of month
+                for (let day = 1; day <= lastDay.getDate(); day++) {
+                    const dayCell = document.createElement('div');
+                    dayCell.className = 'day-cell';
+                    dayCell.textContent = day;
+                    
+                    const date = new Date(currentYear, currentMonth, day);
+                    const dateStr = this.formatDate(date);
+                    
+                    // Check if today
+                    if (day === today.getDate() && currentMonth === today.getMonth()) {
+                        dayCell.classList.add('today');
+                    }
+                    
+                    // Check if completed
+                    const completedToday = this.streaks.some(streak => 
+                        streak.completedDays.includes(dateStr)
+                    );
+                    
+                    if (completedToday) {
+                        dayCell.classList.add('active');
+                        dayCell.title = `${this.streaks.filter(s => s.completedDays.includes(dateStr)).length} streaks completed`;
+                    }
+                    
+                    grid.appendChild(dayCell);
+                }
             }
             
-            showNotification(message) {
-                // Simple notification effect
+            renderUpcoming() {
+                const list = document.getElementById('upcomingList');
+                const today = this.formatDate(new Date());
+                
+                // Get streaks that need attention (broken or not started today)
+                const needsAttention = this.streaks.filter(streak => {
+                    const status = this.getStreakStatus(streak);
+                    return status === 'broken' || (status === 'active' && streak.lastActivity !== today);
+                });
+                
+                if (needsAttention.length === 0) {
+                    list.innerHTML = `
+                        <div style="color: var(--text-secondary); text-align: center; padding: 20px;">
+                            <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 10px; color: var(--success);"></i>
+                            <p>All caught up! Great job!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                list.innerHTML = needsAttention.slice(0, 5).map(streak => `
+                    <div style="padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; margin-bottom: 5px;">${streak.name}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                                ${this.getStreakStatus(streak) === 'broken' ? 'Streak broken' : 'Ready to continue'}
+                            </div>
+                        </div>
+                        <button class="mark-btn" onclick="tracker.markStreak('${streak.id}')" 
+                                style="padding: 8px 15px; font-size: 0.9rem; background: ${streak.color};">
+                            Mark
+                        </button>
+                    </div>
+                `).join('');
+            }
+            
+            updateStats() {
+                const today = this.formatDate(new Date());
+                const yesterday = this.formatDate(new Date(Date.now() - 86400000));
+                
+                const activeStreaks = this.streaks.filter(s => {
+                    const status = this.getStreakStatus(s);
+                    return status === 'active' || status === 'completed';
+                }).length;
+                
+                const completedToday = this.streaks.filter(s => s.lastActivity === today).length;
+                
+                const longestStreak = this.streaks.reduce((max, s) => Math.max(max, s.longestStreak), 0);
+                
+                const totalPossible = this.streaks.length;
+                const completionRate = totalPossible > 0 ? Math.round((completedToday / totalPossible) * 100) : 0;
+                
+                document.getElementById('activeStreaks').textContent = activeStreaks;
+                document.getElementById('completedToday').textContent = completedToday;
+                document.getElementById('longestStreak').textContent = longestStreak;
+                document.getElementById('completionRate').textContent = `${completionRate}%`;
+            }
+            
+            checkDailyCompletions() {
+                // Check for streaks that were completed yesterday but not today (active streaks)
+                const today = this.formatDate(new Date());
+                const yesterday = this.formatDate(new Date(Date.now() - 86400000));
+                
+                const activeStreaks = this.streaks.filter(streak => 
+                    streak.lastActivity === yesterday && streak.lastActivity !== today
+                );
+                
+                if (activeStreaks.length > 0) {
+                    this.showNotification(`Don't forget to continue ${activeStreaks.length} active streak(s)!`, 'warning');
+                }
+            }
+            
+            showNotification(message, type = 'info') {
+                // Create notification element
                 const notification = document.createElement('div');
-                notification.textContent = message;
+                notification.className = 'notification slide-in';
+                notification.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}" 
+                           style="color: ${type === 'success' ? 'var(--success)' : type === 'warning' ? 'var(--warning)' : 'var(--primary)'};"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+                
+                // Style notification
                 notification.style.cssText = `
                     position: fixed;
                     top: 20px;
                     right: 20px;
-                    background: #2ecc71;
-                    color: white;
+                    background: var(--surface);
+                    color: var(--text);
                     padding: 15px 25px;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                    z-index: 1000;
-                    animation: slideIn 0.3s ease;
+                    border-radius: 12px;
+                    box-shadow: var(--shadow);
+                    z-index: 10000;
+                    border-left: 4px solid ${type === 'success' ? 'var(--success)' : type === 'warning' ? 'var(--warning)' : 'var(--primary)'};
+                    max-width: 350px;
+                    animation: slideIn 0.3s ease-out;
                 `;
                 
                 document.body.appendChild(notification);
                 
+                // Remove after 3 seconds
                 setTimeout(() => {
-                    notification.style.animation = 'slideOut 0.3s ease';
+                    notification.style.animation = 'slideIn 0.3s ease-out reverse';
                     setTimeout(() => notification.remove(), 300);
-                }, 2000);
+                }, 3000);
+            }
+            
+            showConfirm(title, message, onConfirm) {
+                document.getElementById('confirmTitle').textContent = title;
+                document.getElementById('confirmMessage').textContent = message;
+                document.getElementById('confirmModal').classList.add('show');
+                
+                const confirmYes = document.getElementById('confirmYes');
+                const confirmNo = document.getElementById('confirmNo');
+                const closeConfirm = document.getElementById('closeConfirm');
+                
+                const closeModal = () => {
+                    document.getElementById('confirmModal').classList.remove('show');
+                };
+                
+                const handleConfirm = () => {
+                    onConfirm();
+                    closeModal();
+                };
+                
+                // Remove previous event listeners
+                confirmYes.replaceWith(confirmYes.cloneNode(true));
+                confirmNo.replaceWith(confirmNo.cloneNode(true));
+                closeConfirm.replaceWith(closeConfirm.cloneNode(true));
+                
+                // Add new event listeners
+                document.getElementById('confirmYes').addEventListener('click', handleConfirm);
+                document.getElementById('confirmNo').addEventListener('click', closeModal);
+                document.getElementById('closeConfirm').addEventListener('click', closeModal);
+                
+                // Close on background click
+                document.getElementById('confirmModal').addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('confirmModal')) {
+                        closeModal();
+                    }
+                });
+            }
+            
+            exportData() {
+                const data = {
+                    streaks: this.streaks,
+                    exportDate: new Date().toISOString(),
+                    version: '1.0'
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `streakflow-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showNotification('Data exported successfully!', 'success');
+            }
+            
+            importData(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        if (data.streaks && Array.isArray(data.streaks)) {
+                            this.showConfirm(
+                                'Import Data',
+                                'This will replace all your current streaks. Are you sure?',
+                                () => {
+                                    this.streaks = data.streaks;
+                                    this.saveData();
+                                    this.renderStreaks();
+                                    this.updateStats();
+                                    this.showNotification('Data imported successfully!', 'success');
+                                }
+                            );
+                        } else {
+                            this.showNotification('Invalid data format', 'danger');
+                        }
+                    } catch (error) {
+                        this.showNotification('Error reading file', 'danger');
+                    }
+                };
+                reader.readAsText(file);
+            }
+            
+            resetAllData() {
+                this.showConfirm(
+                    'Reset All Data',
+                    'This will delete ALL streaks and cannot be undone. Are you sure?',
+                    () => {
+                        this.streaks = [];
+                        this.saveData();
+                        this.renderStreaks();
+                        this.updateStats();
+                        this.showNotification('All data has been reset', 'danger');
+                    }
+                );
             }
             
             setupEventListeners() {
-                document.getElementById('addStreakBtn').addEventListener('click', () => {
-                    const nameInput = document.getElementById('streakName');
-                    this.addStreak(nameInput.value);
+                // Theme toggle
+                document.getElementById('themeToggle').addEventListener('click', () => {
+                    this.settings.darkMode = !this.settings.darkMode;
+                    this.saveSettings();
+                    this.applyTheme();
                 });
                 
+                // Settings modal
+                document.getElementById('settingsBtn').addEventListener('click', () => {
+                    document.getElementById('settingsModal').classList.add('show');
+                });
+                
+                document.getElementById('closeSettings').addEventListener('click', () => {
+                    document.getElementById('settingsModal').classList.remove('show');
+                });
+                
+                document.getElementById('settingsModal').addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('settingsModal')) {
+                        document.getElementById('settingsModal').classList.remove('show');
+                    }
+                });
+                
+                // Filter buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.currentFilter = e.target.dataset.filter;
+                        this.renderStreaks();
+                    });
+                });
+                
+                // Add streak form
+                document.getElementById('addStreakTrigger').addEventListener('click', () => {
+                    document.getElementById('addStreakForm').classList.toggle('show');
+                });
+                
+                // Color picker
+                document.querySelectorAll('.color-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+                        e.target.classList.add('selected');
+                    });
+                });
+                
+                // Save streak
+                document.getElementById('saveStreakBtn').addEventListener('click', () => {
+                    const name = document.getElementById('streakName').value.trim();
+                    if (!name) {
+                        this.showNotification('Please enter a habit name', 'warning');
+                        return;
+                    }
+                    
+                    const color = document.querySelector('.color-option.selected').dataset.color;
+                    
+                    this.createStreak({
+                        name: name,
+                        category: document.getElementById('streakCategory').value,
+                        description: document.getElementById('streakDescription').value,
+                        color: color,
+                        frequency: document.getElementById('streakFrequency').value
+                    });
+                    
+                    // Reset form
+                    document.getElementById('addStreakForm').classList.remove('show');
+                    document.getElementById('streakName').value = '';
+                    document.getElementById('streakDescription').value = '';
+                });
+                
+                // Enter key in name field
                 document.getElementById('streakName').addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
-                        this.addStreak(e.target.value);
+                        document.getElementById('saveStreakBtn').click();
                     }
+                });
+                
+                // Settings buttons
+                document.getElementById('exportBtn').addEventListener('click', () => {
+                    this.exportData();
+                });
+                
+                document.getElementById('importBtn').addEventListener('click', () => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = '.json';
+                    input.onchange = (e) => this.importData(e.target.files[0]);
+                    input.click();
+                });
+                
+                document.getElementById('resetAllBtn').addEventListener('click', () => {
+                    this.resetAllData();
+                });
+                
+                // Save settings changes
+                document.getElementById('weekStart').addEventListener('change', (e) => {
+                    this.settings.weekStart = parseInt(e.target.value);
+                    this.saveSettings();
+                });
+                
+                document.getElementById('reminderTime').addEventListener('change', (e) => {
+                    this.settings.reminderTime = e.target.value;
+                    this.saveSettings();
+                });
+                
+                document.getElementById('dailyGoal').addEventListener('change', (e) => {
+                    this.settings.dailyGoal = parseInt(e.target.value);
+                    this.saveSettings();
                 });
             }
         }
         
-        // Add CSS animations for notifications
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-            
-            @keyframes slideOut {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-                to {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Initialize the streak tracker
-        let streakTracker;
+        // Initialize the app
+        let tracker;
         document.addEventListener('DOMContentLoaded', () => {
-            streakTracker = new MultiStreakTracker();
+            tracker = new EnhancedStreakTracker();
         });
     </script>
 </body>
